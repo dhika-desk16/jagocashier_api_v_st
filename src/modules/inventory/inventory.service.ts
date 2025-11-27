@@ -1,0 +1,30 @@
+import { Injectable } from '@nestjs/common';
+import { CreateInventoryDto } from './dto/create-inventory.dto';
+import { UpdateInventoryDto } from './dto/update-inventory.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { createResponse } from 'src/common/dto/response.helper';
+
+@Injectable()
+export class InventoryService {
+  constructor(private readonly prisma: PrismaService) {}
+  create(createInventoryDto: CreateInventoryDto) {
+    return 'This action adds a new inventory';
+  }
+
+  async findAll() {
+    const inventories = await this.prisma.inventory.findMany();
+    return createResponse(inventories);
+  }
+
+  findOne(id: number) {
+    return `This action returns a #${id} inventory`;
+  }
+
+  update(id: number, updateInventoryDto: UpdateInventoryDto) {
+    return `This action updates a #${id} inventory`;
+  }
+
+  remove(id: number) {
+    return `This action removes a #${id} inventory`;
+  }
+}

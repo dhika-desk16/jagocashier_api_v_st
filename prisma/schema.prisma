@@ -1,0 +1,461 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+
+// ============================================
+// LEVEL 0: Base entities (no foreign keys)
+// ============================================
+
+model Role {
+  id          Int     @id @default(autoincrement())
+  name        String  @unique
+  description String  @db.Text
+  permissions Json
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  users       User[]
+
+  @@map("roles")
+}
+
+model Store {
+  id        Int      @id @default(autoincrement())
+  code      String   @unique
+  name      String
+  address   String
+  city      String
+  phone     String
+  email     String
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relations
+  users              User[]
+  inventories        Inventory[]
+  shifts             Shift[]
+  settings           StoreSetting?
+  transactions       Transaction[]
+  sourceTransfers    StockTransfer[] @relation("SourceStore")
+  destinationTransfers StockTransfer[] @relation("DestinationStore")
+
+  @@map("stores")
+}
+
+model ProductCategory {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?  @db.Text
+  parentId    Int?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  parent            ProductCategory?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children          ProductCategory[] @relation("CategoryHierarchy")
+  products          Product[]
+  promotionProducts PromotionProduct[]
+
+  @@map("product_categories")
+}
+
+model PaymentMethod {
+  id            Int     @id @default(autoincrement())
+  name          String
+  type          String
+  isActive      Boolean @default(true)
+  configuration Json?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  // Relations
+  payments      Payment[]
+
+  @@map("payment_methods")
+}
+
+model Tax {
+  id            Int      @id @default(autoincrement())
+  name          String
+  rate          Decimal  @db.Decimal(5, 2)
+  type          String
+  isActive      Boolean  @default(true)
+  effectiveFrom DateTime @db.Date
+  effectiveTo   DateTime? @db.Date
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("taxes")
+}
+
+model Customer {
+  id           String    @id @default(uuid())
+  code         String    @unique
+  fullName     String
+  email        String
+  phone        String    @unique
+  address      String?
+  birthDate    DateTime? @db.Date
+  gender       String?
+  registeredAt DateTime  @db.Timestamp(6)
+  lastVisit    DateTime? @db.Timestamp(6)
+  isActive     Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  
+  // Relations
+  transactions         Transaction[]
+  loyaltyPoints        LoyaltyPoint?
+  loyaltyTransactions  LoyaltyTransaction[]
+
+  @@map("customers")
+}
+
+// ============================================
+// LEVEL 1: Entities depending on Level 0
+// ============================================
+
+model StoreSetting {
+  id              Int     @id @default(autoincrement())
+  storeId         Int     @unique
+  taxRate         Decimal @db.Decimal(5, 2)
+  currency        String
+  timezone        String
+  printerConfig   Json?
+  receiptTemplate Json?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  // Relations
+  store           Store   @relation(fields: [storeId], references: [id])
+
+  @@map("store_settings")
+}
+
+model User {
+  id         Int      @id @default(autoincrement())
+  username   String   @unique
+  password   String
+  fullName   String
+  email      String   @unique
+  phone      String
+  roleId     Int
+  storeId    Int?
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  
+  // Relations
+  role             Role              @relation(fields: [roleId], references: [id])
+  store            Store?            @relation(fields: [storeId], references: [id])
+  shifts           Shift[]
+  transactions     Transaction[]
+  stockAdjustments StockAdjustment[]
+  stockTransfers   StockTransfer[]
+
+  @@map("users")
+}
+
+model Product {
+  id             Int      @id @default(autoincrement())
+  sku            String   @unique
+  name           String
+  description    String?  @db.Text
+  categoryId     Int
+  basePrice      Decimal  @db.Decimal(10, 2)
+  costPrice      Decimal  @db.Decimal(10, 2)
+  barcode        String?  @unique
+  imageUrl       String?
+  isActive       Boolean  @default(true)
+  trackInventory Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  
+  // Relations
+  category          ProductCategory    @relation(fields: [categoryId], references: [id])
+  variants          ProductVariant[]
+  inventories       Inventory[]
+  transactionItems  TransactionItem[]
+  stockTransfers    StockTransfer[]
+  promotionProducts PromotionProduct[]
+
+  @@map("products")
+}
+
+model Promotion {
+  id              Int      @id @default(autoincrement())
+  code            String   @unique
+  name            String
+  description     String?  @db.Text
+  discountType    String
+  discountValue   Decimal  @db.Decimal(10, 2)
+  minimumPurchase Decimal? @db.Decimal(10, 2)
+  startDate       DateTime @db.Date
+  endDate         DateTime @db.Date
+  isActive        Boolean  @default(true)
+  usageLimit      Int?
+  usageCount      Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  // Relations
+  promotionProducts PromotionProduct[]
+
+  @@map("promotions")
+}
+
+model LoyaltyPoint {
+  id             String    @id @default(uuid())
+  customerId     String    @unique
+  balance        Int       @default(0)
+  lifetimePoints Int       @default(0)
+  lastEarned     DateTime? @db.Timestamp(6)
+  lastRedeemed   DateTime? @db.Timestamp(6)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  
+  // Relations
+  customer       Customer  @relation(fields: [customerId], references: [id])
+
+  @@map("loyalty_points")
+}
+
+// ============================================
+// LEVEL 2: Entities depending on Level 0-1
+// ============================================
+
+model ProductVariant {
+  id              Int      @id @default(autoincrement())
+  productId       Int
+  name            String
+  type            String
+  priceAdjustment Decimal  @db.Decimal(10, 2)
+  sku             String   @unique
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  // Relations
+  product          Product           @relation(fields: [productId], references: [id])
+  transactionItems TransactionItem[]
+
+  @@map("product_variants")
+}
+
+model Inventory {
+  id           Int      @id @default(autoincrement())
+  productId    Int
+  storeId      Int
+  quantity     Int
+  minimumStock Int
+  maximumStock Int
+  averageCost  Decimal  @db.Decimal(10, 2)
+  lastUpdated  DateTime @updatedAt
+  createdAt    DateTime @default(now())
+  
+  // Relations
+  product          Product           @relation(fields: [productId], references: [id])
+  store            Store             @relation(fields: [storeId], references: [id])
+  stockAdjustments StockAdjustment[]
+
+  @@unique([productId, storeId])
+  @@map("inventory")
+}
+
+model Shift {
+  id           Int       @id @default(autoincrement())
+  storeId      Int
+  userId       Int
+  openingCash  Decimal   @db.Decimal(10, 2)
+  closingCash  Decimal?  @db.Decimal(10, 2)
+  expectedCash Decimal?  @db.Decimal(10, 2)
+  variance     Decimal?  @db.Decimal(10, 2)
+  openedAt     DateTime  @default(now()) @db.Timestamp(6)
+  closedAt     DateTime? @db.Timestamp(6)
+  status       String
+  notes        String?   @db.Text
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  
+  // Relations
+  store        Store         @relation(fields: [storeId], references: [id])
+  user         User          @relation(fields: [userId], references: [id])
+  transactions Transaction[]
+
+  @@map("shifts")
+}
+
+model PromotionProduct {
+  id          Int  @id @default(autoincrement())
+  promotionId Int
+  productId   Int?
+  categoryId  Int?
+  
+  // Relations
+  promotion   Promotion        @relation(fields: [promotionId], references: [id])
+  product     Product?         @relation(fields: [productId], references: [id])
+  category    ProductCategory? @relation(fields: [categoryId], references: [id])
+
+  @@map("promotion_products")
+}
+
+// ============================================
+// LEVEL 3: Entities depending on Level 0-2
+// ============================================
+
+model StockAdjustment {
+  id             Int      @id @default(autoincrement())
+  inventoryId    Int
+  userId         Int
+  quantityChange Int
+  type           String
+  reason         String
+  notes          String?  @db.Text
+  createdAt      DateTime @default(now())
+  
+  // Relations
+  inventory      Inventory @relation(fields: [inventoryId], references: [id])
+  user           User      @relation(fields: [userId], references: [id])
+
+  @@map("stock_adjustments")
+}
+
+model StockTransfer {
+  id                   Int       @id @default(autoincrement())
+  productId            Int
+  sourceStoreId        Int
+  destinationStoreId   Int
+  quantity             Int
+  userId               Int
+  status               String
+  notes                String?   @db.Text
+  createdAt            DateTime  @default(now())
+  completedAt          DateTime? @db.Timestamp(6)
+  
+  // Relations
+  product              Product   @relation(fields: [productId], references: [id])
+  sourceStore          Store     @relation("SourceStore", fields: [sourceStoreId], references: [id])
+  destinationStore     Store     @relation("DestinationStore", fields: [destinationStoreId], references: [id])
+  user                 User      @relation(fields: [userId], references: [id])
+
+  @@map("stock_transfers")
+}
+
+model Transaction {
+  id              String    @id @default(uuid())
+  code            String    @unique
+  storeId         Int
+  shiftId         Int
+  userId          Int
+  customerId      String?
+  subtotal        Decimal   @db.Decimal(10, 2)
+  discountAmount  Decimal   @default(0) @db.Decimal(10, 2)
+  taxAmount       Decimal   @default(0) @db.Decimal(10, 2)
+  totalAmount     Decimal   @db.Decimal(10, 2)
+  status          String
+  transactionDate DateTime  @db.Timestamp(6)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  // Relations
+  store               Store                @relation(fields: [storeId], references: [id])
+  shift               Shift                @relation(fields: [shiftId], references: [id])
+  user                User                 @relation(fields: [userId], references: [id])
+  customer            Customer?            @relation(fields: [customerId], references: [id])
+  items               TransactionItem[]
+  payments            Payment[]
+  receipt             Receipt?
+  loyaltyTransactions LoyaltyTransaction[]
+
+  @@map("transactions")
+}
+
+// ============================================
+// LEVEL 4: Entities depending on Level 0-3
+// ============================================
+
+model TransactionItem {
+  id             String   @id @default(uuid())
+  transactionId  String
+  productId      Int
+  variantId      Int?
+  quantity       Int
+  unitPrice      Decimal  @db.Decimal(10, 2)
+  discountAmount Decimal  @default(0) @db.Decimal(10, 2)
+  subtotal       Decimal  @db.Decimal(10, 2)
+  notes          String?  @db.Text
+  createdAt      DateTime @default(now())
+  
+  // Relations
+  transaction    Transaction     @relation(fields: [transactionId], references: [id])
+  product        Product         @relation(fields: [productId], references: [id])
+  variant        ProductVariant? @relation(fields: [variantId], references: [id])
+
+  @@map("transaction_items")
+}
+
+model Payment {
+  id              String   @id @default(uuid())
+  transactionId   String
+  paymentMethodId Int
+  amount          Decimal  @db.Decimal(10, 2)
+  status          String
+  referenceNumber String?
+  paymentDate     DateTime @db.Timestamp(6)
+  notes           String?  @db.Text
+  createdAt       DateTime @default(now())
+  
+  // Relations
+  transaction     Transaction   @relation(fields: [transactionId], references: [id])
+  paymentMethod   PaymentMethod @relation(fields: [paymentMethodId], references: [id])
+
+  @@map("payments")
+}
+
+model Receipt {
+  id            String    @id @default(uuid())
+  transactionId String    @unique
+  number        String    @unique
+  content       String    @db.Text
+  isPrinted     Boolean   @default(false)
+  printedAt     DateTime? @db.Timestamp(6)
+  createdAt     DateTime  @default(now())
+  
+  // Relations
+  transaction   Transaction @relation(fields: [transactionId], references: [id])
+
+  @@map("receipts")
+}
+
+model LoyaltyTransaction {
+  id             String   @id @default(uuid())
+  customerId     String
+  transactionId  String
+  pointsEarned   Int      @default(0)
+  pointsRedeemed Int      @default(0)
+  type           String
+  createdAt      DateTime @default(now())
+  
+  // Relations
+  customer       Customer    @relation(fields: [customerId], references: [id])
+  transaction    Transaction @relation(fields: [transactionId], references: [id])
+
+  @@map("loyalty_transactions")
+}
