@@ -4,12 +4,13 @@ import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { JwtAuthGuard } from './modules/auth/jwt-auth.guard';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 import { AllExceptionsFilter } from './common/filters/http-exception.filter';
+import { TimezoneInterceptor } from './common/interceptors/TimezoneInterceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  const reflector = app.get(Reflector);
-  app.useGlobalGuards(new JwtAuthGuard(reflector));
+  // const reflector = app.get(Reflector);
+  // app.useGlobalGuards(new JwtAuthGuard(reflector));
 
   app.enableCors({
     origin: '*',
@@ -30,6 +31,7 @@ async function bootstrap() {
     }),
   );
   app.useGlobalInterceptors(new TransformInterceptor());
+  app.useGlobalInterceptors(new TimezoneInterceptor());
   app.useGlobalFilters(new AllExceptionsFilter());
 
   const port = process.env.PORT ?? 3000;

@@ -3,12 +3,21 @@ import { CreateStoreDto } from './dto/create-store.dto';
 import { UpdateStoreDto } from './dto/update-store.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { createResponse } from 'src/common/dto/response.helper';
+import { generateCode } from 'src/common/utils/generateCode';
 
 @Injectable()
 export class StoresService {
   constructor(private prisma: PrismaService) {}
-  create(createStoreDto: CreateStoreDto) {
-    return 'This action adds a new store';
+  async create(dto: CreateStoreDto) {
+    const code = new generateCode('STR').tag('JKT');
+    const store = await this.prisma.store.create({
+      data: {
+        code,
+        ...dto,
+      },
+    });
+
+    return createResponse(store);
   }
 
   async findAll() {

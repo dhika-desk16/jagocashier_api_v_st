@@ -74,7 +74,7 @@ export class UsersService {
   async findById(id: number) {
     const user = await this.prisma.user.findUnique({
       where: { id },
-      include: { role: true, store: true },
+      include: { role: true, store: true, shifts: true },
     });
 
     return createResponse(user);

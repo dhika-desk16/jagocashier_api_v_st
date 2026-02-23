@@ -17,15 +17,27 @@ export class CustomersService {
     return createResponse(customers);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} customer`;
+  async findOne(id: string) {
+    const customer = await this.prisma.customer.findUnique({
+      where: { id },
+    });
+    return createResponse(customer);
   }
 
-  update(id: number, updateCustomerDto: UpdateCustomerDto) {
-    return `This action updates a #${id} customer`;
+  update(id: string, updateCustomerDto: UpdateCustomerDto) {
+    const customer = this.prisma.customer.update({
+      where: { id },
+      data: {
+        ...updateCustomerDto,
+      },
+    });
+    return createResponse(customer);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} customer`;
+  remove(id: string) {
+    const customer = this.prisma.customer.delete({
+      where: { id },
+    });
+    return createResponse(customer);
   }
 }

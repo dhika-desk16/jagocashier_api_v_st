@@ -21,9 +21,9 @@ async function main() {
     await seedTaxes();
     await seedPromotions();
 
-    console.log('✅ Seeding completed!');
+    console.log('Seeding completed!');
   } catch (error) {
-    console.error('❌ Seeding failed:', error);
+    console.error('Seeding failed:', error);
     throw error;
   }
 }
@@ -32,7 +32,7 @@ async function seedRoles() {
   const count = await prisma.role.count();
 
   if (count > 0) {
-    console.log('⏭️  Roles already seeded');
+    console.log('  Roles already seeded');
     return;
   }
 
@@ -85,14 +85,14 @@ async function seedRoles() {
   ];
 
   await prisma.role.createMany({ data: roles });
-  console.log('✅ Roles seeded');
+  console.log(' Roles seeded');
 }
 
 async function seedStores() {
   const count = await prisma.store.count();
 
   if (count > 0) {
-    console.log('⏭️  Stores already seeded');
+    console.log('  Stores already seeded');
     return;
   }
 
@@ -127,14 +127,14 @@ async function seedStores() {
   ];
 
   await prisma.store.createMany({ data: stores });
-  console.log('✅ Stores seeded');
+  console.log(' Stores seeded');
 }
 
 async function seedStoreSettings() {
   const count = await prisma.storeSetting.count();
 
   if (count > 0) {
-    console.log('⏭️  Store Settings already seeded');
+    console.log('  Store Settings already seeded');
     return;
   }
 
@@ -158,14 +158,14 @@ async function seedStoreSettings() {
   }));
 
   await prisma.storeSetting.createMany({ data: settings });
-  console.log('✅ Store Settings seeded');
+  console.log(' Store Settings seeded');
 }
 
 async function seedUsers() {
   const count = await prisma.user.count();
 
   if (count > 0) {
-    console.log('⏭️  Users already seeded');
+    console.log('  Users already seeded');
     return;
   }
 
@@ -228,14 +228,14 @@ async function seedUsers() {
   ];
 
   await prisma.user.createMany({ data: users });
-  console.log('✅ Users seeded');
+  console.log(' Users seeded');
 }
 
 async function seedProductCategories() {
   const count = await prisma.productCategory.count();
 
   if (count > 0) {
-    console.log('⏭️  Product Categories already seeded');
+    console.log('  Product Categories already seeded');
     return;
   }
 
@@ -309,14 +309,14 @@ async function seedProductCategories() {
   ];
 
   await prisma.productCategory.createMany({ data: subcategories });
-  console.log('✅ Product Categories seeded');
+  console.log(' Product Categories seeded');
 }
 
 async function seedProducts() {
   const count = await prisma.product.count();
 
   if (count > 0) {
-    console.log('⏭️  Products already seeded');
+    console.log('  Products already seeded');
     return;
   }
 
@@ -396,14 +396,14 @@ async function seedProducts() {
   ];
 
   await prisma.product.createMany({ data: products });
-  console.log('✅ Products seeded');
+  console.log(' Products seeded');
 }
 
 async function seedProductVariants() {
   const count = await prisma.productVariant.count();
 
   if (count > 0) {
-    console.log('⏭️  Product Variants already seeded');
+    console.log('  Product Variants already seeded');
     return;
   }
 
@@ -456,14 +456,14 @@ async function seedProductVariants() {
   ];
 
   await prisma.productVariant.createMany({ data: variants });
-  console.log('✅ Product Variants seeded');
+  console.log(' Product Variants seeded');
 }
 
 async function seedInventory() {
   const count = await prisma.inventory.count();
 
   if (count > 0) {
-    console.log('⏭️  Inventory already seeded');
+    console.log('  Inventory already seeded');
     return;
   }
 
@@ -485,14 +485,14 @@ async function seedInventory() {
   }
 
   await prisma.inventory.createMany({ data: inventory });
-  console.log('✅ Inventory seeded');
+  console.log('Inventory seeded');
 }
 
 async function seedCustomers() {
   const count = await prisma.customer.count();
 
   if (count > 0) {
-    console.log('⏭️  Customers already seeded');
+    console.log('Customers already seeded');
     return;
   }
 
@@ -555,35 +555,35 @@ async function seedCustomers() {
   ];
 
   await prisma.customer.createMany({ data: customers });
-  console.log('✅ Customers seeded');
+  console.log('Customers seeded');
 }
 
 async function seedLoyaltyPoints() {
   const count = await prisma.loyaltyPoint.count();
 
   if (count > 0) {
-    console.log('⏭️  Loyalty Points already seeded');
+    console.log('Loyalty Points already seeded');
     return;
   }
 
   const customers = await prisma.customer.findMany();
 
   const loyaltyPoints = customers.map((customer) => ({
-    customerId: customer.id, // UUID string
+    customerId: customer.id,
     balance: Math.floor(Math.random() * 1000),
     lifetimePoints: Math.floor(Math.random() * 5000),
     lastEarned: new Date(),
   }));
 
   await prisma.loyaltyPoint.createMany({ data: loyaltyPoints });
-  console.log('✅ Loyalty Points seeded');
+  console.log('Loyalty Points seeded');
 }
 
 async function seedPaymentMethods() {
   const count = await prisma.paymentMethod.count();
 
   if (count > 0) {
-    console.log('⏭️  Payment Methods already seeded');
+    console.log('Payment Methods already seeded');
     return;
   }
 
@@ -640,14 +640,14 @@ async function seedPaymentMethods() {
   ];
 
   await prisma.paymentMethod.createMany({ data: paymentMethods });
-  console.log('✅ Payment Methods seeded');
+  console.log('Payment Methods seeded');
 }
 
 async function seedTaxes() {
   const count = await prisma.tax.count();
 
   if (count > 0) {
-    console.log('⏭️  Taxes already seeded');
+    console.log('  Taxes already seeded');
     return;
   }
 
@@ -669,14 +669,14 @@ async function seedTaxes() {
   ];
 
   await prisma.tax.createMany({ data: taxes });
-  console.log('✅ Taxes seeded');
+  console.log('Taxes seeded');
 }
 
 async function seedPromotions() {
   const count = await prisma.promotion.count();
 
   if (count > 0) {
-    console.log('⏭️  Promotions already seeded');
+    console.log('  Promotions already seeded');
     return;
   }
 
@@ -721,17 +721,16 @@ async function seedPromotions() {
   ];
 
   await prisma.promotion.createMany({ data: promotions });
-  console.log('✅ Promotions seeded');
+  console.log('Promotions seeded');
 }
 
-// Run the seeder
 main()
   .then(async () => {
-    console.log('🎉 All done!');
+    console.log('All done!');
     await prisma.$disconnect();
   })
   .catch(async (error) => {
-    console.error('💥 Error:', error);
+    console.error('Error:', error);
     await prisma.$disconnect();
     process.exit(1);
   });

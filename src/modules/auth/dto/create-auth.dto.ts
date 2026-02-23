@@ -7,4 +7,7 @@ export class CreateAuthDto {
   @IsString()
   @MinLength(6)
   password: string;
+
+  @IsString()
+  deviceId: string;
 }

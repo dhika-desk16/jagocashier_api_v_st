@@ -14,22 +14,20 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
-
 // ============================================
 // LEVEL 0: Base entities (no foreign keys)
 // ============================================
 
 model Role {
-  id          Int     @id @default(autoincrement())
-  name        String  @unique
-  description String  @db.Text
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  description String   @db.Text
   permissions Json
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  
+
   // Relations
-  users       User[]
+  users User[]
 
   @@map("roles")
 }
@@ -45,14 +43,14 @@ model Store {
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
+
   // Relations
-  users              User[]
-  inventories        Inventory[]
-  shifts             Shift[]
-  settings           StoreSetting?
-  transactions       Transaction[]
-  sourceTransfers    StockTransfer[] @relation("SourceStore")
+  users                User[]
+  inventories          Inventory[]
+  shifts               Shift[]
+  settings             StoreSetting?
+  transactions         Transaction[]
+  sourceTransfers      StockTransfer[] @relation("SourceStore")
   destinationTransfers StockTransfer[] @relation("DestinationStore")
 
   @@map("stores")
@@ -66,10 +64,10 @@ model ProductCategory {
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  
+
   // Relations
-  parent            ProductCategory?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
-  children          ProductCategory[] @relation("CategoryHierarchy")
+  parent            ProductCategory?   @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children          ProductCategory[]  @relation("CategoryHierarchy")
   products          Product[]
   promotionProducts PromotionProduct[]
 
@@ -77,30 +75,30 @@ model ProductCategory {
 }
 
 model PaymentMethod {
-  id            Int     @id @default(autoincrement())
+  id            Int      @id @default(autoincrement())
   name          String
   type          String
-  isActive      Boolean @default(true)
+  isActive      Boolean  @default(true)
   configuration Json?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
-  
+
   // Relations
-  payments      Payment[]
+  payments Payment[]
 
   @@map("payment_methods")
 }
 
 model Tax {
-  id            Int      @id @default(autoincrement())
+  id            Int       @id @default(autoincrement())
   name          String
-  rate          Decimal  @db.Decimal(5, 2)
+  rate          Decimal   @db.Decimal(5, 2)
   type          String
-  isActive      Boolean  @default(true)
-  effectiveFrom DateTime @db.Date
+  isActive      Boolean   @default(true)
+  effectiveFrom DateTime  @db.Date
   effectiveTo   DateTime? @db.Date
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 
   @@map("taxes")
 }
@@ -119,11 +117,11 @@ model Customer {
   isActive     Boolean   @default(true)
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
-  
+
   // Relations
-  transactions         Transaction[]
-  loyaltyPoints        LoyaltyPoint?
-  loyaltyTransactions  LoyaltyTransaction[]
+  transactions        Transaction[]
+  loyaltyPoints       LoyaltyPoint?
+  loyaltyTransactions LoyaltyTransaction[]
 
   @@map("customers")
 }
@@ -133,35 +131,35 @@ model Customer {
 // ============================================
 
 model StoreSetting {
-  id              Int     @id @default(autoincrement())
-  storeId         Int     @unique
-  taxRate         Decimal @db.Decimal(5, 2)
+  id              Int      @id @default(autoincrement())
+  storeId         Int      @unique
+  taxRate         Decimal  @db.Decimal(5, 2)
   currency        String
   timezone        String
   printerConfig   Json?
   receiptTemplate Json?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
-  
+
   // Relations
-  store           Store   @relation(fields: [storeId], references: [id])
+  store Store @relation(fields: [storeId], references: [id])
 
   @@map("store_settings")
 }
 
 model User {
-  id         Int      @id @default(autoincrement())
-  username   String   @unique
-  password   String
-  fullName   String
-  email      String   @unique
-  phone      String
-  roleId     Int
-  storeId    Int?
-  isActive   Boolean  @default(true)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  password  String
+  fullName  String
+  email     String   @unique
+  phone     String
+  roleId    Int
+  storeId   Int?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   // Relations
   role             Role              @relation(fields: [roleId], references: [id])
   store            Store?            @relation(fields: [storeId], references: [id])
@@ -169,8 +167,28 @@ model User {
   transactions     Transaction[]
   stockAdjustments StockAdjustment[]
   stockTransfers   StockTransfer[]
+  refreshTokens    RefreshToken[]
 
   @@map("users")
+}
+
+model RefreshToken {
+  id       Int    @id @default(autoincrement())
+  userId   Int
+  deviceId String
+
+  tokenHash String
+
+  expiresAt DateTime
+  revokedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, deviceId], name: "user_device_unique")
+  @@index([expiresAt])
 }
 
 model Product {
@@ -187,7 +205,7 @@ model Product {
   trackInventory Boolean  @default(true)
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
-  
+
   // Relations
   category          ProductCategory    @relation(fields: [categoryId], references: [id])
   variants          ProductVariant[]
@@ -214,7 +232,7 @@ model Promotion {
   usageCount      Int      @default(0)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
-  
+
   // Relations
   promotionProducts PromotionProduct[]
 
@@ -230,9 +248,9 @@ model LoyaltyPoint {
   lastRedeemed   DateTime? @db.Timestamp(6)
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
-  
+
   // Relations
-  customer       Customer  @relation(fields: [customerId], references: [id])
+  customer Customer @relation(fields: [customerId], references: [id])
 
   @@map("loyalty_points")
 }
@@ -251,7 +269,7 @@ model ProductVariant {
   isActive        Boolean  @default(true)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
-  
+
   // Relations
   product          Product           @relation(fields: [productId], references: [id])
   transactionItems TransactionItem[]
@@ -269,7 +287,7 @@ model Inventory {
   averageCost  Decimal  @db.Decimal(10, 2)
   lastUpdated  DateTime @updatedAt
   createdAt    DateTime @default(now())
-  
+
   // Relations
   product          Product           @relation(fields: [productId], references: [id])
   store            Store             @relation(fields: [storeId], references: [id])
@@ -293,7 +311,7 @@ model Shift {
   notes        String?   @db.Text
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
-  
+
   // Relations
   store        Store         @relation(fields: [storeId], references: [id])
   user         User          @relation(fields: [userId], references: [id])
@@ -307,11 +325,11 @@ model PromotionProduct {
   promotionId Int
   productId   Int?
   categoryId  Int?
-  
+
   // Relations
-  promotion   Promotion        @relation(fields: [promotionId], references: [id])
-  product     Product?         @relation(fields: [productId], references: [id])
-  category    ProductCategory? @relation(fields: [categoryId], references: [id])
+  promotion Promotion        @relation(fields: [promotionId], references: [id])
+  product   Product?         @relation(fields: [productId], references: [id])
+  category  ProductCategory? @relation(fields: [categoryId], references: [id])
 
   @@map("promotion_products")
 }
@@ -329,51 +347,51 @@ model StockAdjustment {
   reason         String
   notes          String?  @db.Text
   createdAt      DateTime @default(now())
-  
+
   // Relations
-  inventory      Inventory @relation(fields: [inventoryId], references: [id])
-  user           User      @relation(fields: [userId], references: [id])
+  inventory Inventory @relation(fields: [inventoryId], references: [id])
+  user      User      @relation(fields: [userId], references: [id])
 
   @@map("stock_adjustments")
 }
 
 model StockTransfer {
-  id                   Int       @id @default(autoincrement())
-  productId            Int
-  sourceStoreId        Int
-  destinationStoreId   Int
-  quantity             Int
-  userId               Int
-  status               String
-  notes                String?   @db.Text
-  createdAt            DateTime  @default(now())
-  completedAt          DateTime? @db.Timestamp(6)
-  
+  id                 Int       @id @default(autoincrement())
+  productId          Int
+  sourceStoreId      Int
+  destinationStoreId Int
+  quantity           Int
+  userId             Int
+  status             String
+  notes              String?   @db.Text
+  createdAt          DateTime  @default(now())
+  completedAt        DateTime? @db.Timestamp(6)
+
   // Relations
-  product              Product   @relation(fields: [productId], references: [id])
-  sourceStore          Store     @relation("SourceStore", fields: [sourceStoreId], references: [id])
-  destinationStore     Store     @relation("DestinationStore", fields: [destinationStoreId], references: [id])
-  user                 User      @relation(fields: [userId], references: [id])
+  product          Product @relation(fields: [productId], references: [id])
+  sourceStore      Store   @relation("SourceStore", fields: [sourceStoreId], references: [id])
+  destinationStore Store   @relation("DestinationStore", fields: [destinationStoreId], references: [id])
+  user             User    @relation(fields: [userId], references: [id])
 
   @@map("stock_transfers")
 }
 
 model Transaction {
-  id              String    @id @default(uuid())
-  code            String    @unique
+  id              String   @id @default(uuid())
+  code            String   @unique
   storeId         Int
   shiftId         Int
   userId          Int
   customerId      String?
-  subtotal        Decimal   @db.Decimal(10, 2)
-  discountAmount  Decimal   @default(0) @db.Decimal(10, 2)
-  taxAmount       Decimal   @default(0) @db.Decimal(10, 2)
-  totalAmount     Decimal   @db.Decimal(10, 2)
+  subtotal        Decimal  @db.Decimal(10, 2)
+  discountAmount  Decimal  @default(0) @db.Decimal(10, 2)
+  taxAmount       Decimal  @default(0) @db.Decimal(10, 2)
+  totalAmount     Decimal  @db.Decimal(10, 2)
   status          String
-  transactionDate DateTime  @db.Timestamp(6)
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  
+  transactionDate DateTime @db.Timestamp(6)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
   // Relations
   store               Store                @relation(fields: [storeId], references: [id])
   shift               Shift                @relation(fields: [shiftId], references: [id])
@@ -402,11 +420,11 @@ model TransactionItem {
   subtotal       Decimal  @db.Decimal(10, 2)
   notes          String?  @db.Text
   createdAt      DateTime @default(now())
-  
+
   // Relations
-  transaction    Transaction     @relation(fields: [transactionId], references: [id])
-  product        Product         @relation(fields: [productId], references: [id])
-  variant        ProductVariant? @relation(fields: [variantId], references: [id])
+  transaction Transaction     @relation(fields: [transactionId], references: [id])
+  product     Product         @relation(fields: [productId], references: [id])
+  variant     ProductVariant? @relation(fields: [variantId], references: [id])
 
   @@map("transaction_items")
 }
@@ -421,10 +439,10 @@ model Payment {
   paymentDate     DateTime @db.Timestamp(6)
   notes           String?  @db.Text
   createdAt       DateTime @default(now())
-  
+
   // Relations
-  transaction     Transaction   @relation(fields: [transactionId], references: [id])
-  paymentMethod   PaymentMethod @relation(fields: [paymentMethodId], references: [id])
+  transaction   Transaction   @relation(fields: [transactionId], references: [id])
+  paymentMethod PaymentMethod @relation(fields: [paymentMethodId], references: [id])
 
   @@map("payments")
 }
@@ -437,9 +455,9 @@ model Receipt {
   isPrinted     Boolean   @default(false)
   printedAt     DateTime? @db.Timestamp(6)
   createdAt     DateTime  @default(now())
-  
+
   // Relations
-  transaction   Transaction @relation(fields: [transactionId], references: [id])
+  transaction Transaction @relation(fields: [transactionId], references: [id])
 
   @@map("receipts")
 }
@@ -452,10 +470,10 @@ model LoyaltyTransaction {
   pointsRedeemed Int      @default(0)
   type           String
   createdAt      DateTime @default(now())
-  
+
   // Relations
-  customer       Customer    @relation(fields: [customerId], references: [id])
-  transaction    Transaction @relation(fields: [transactionId], references: [id])
+  customer    Customer    @relation(fields: [customerId], references: [id])
+  transaction Transaction @relation(fields: [transactionId], references: [id])
 
   @@map("loyalty_transactions")
 }
