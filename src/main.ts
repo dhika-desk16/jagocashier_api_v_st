@@ -1,3 +1,4 @@
+import * as dotenv from 'dotenv';
 import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe, VersioningType } from '@nestjs/common';
@@ -5,6 +6,11 @@ import { JwtAuthGuard } from './modules/auth/jwt-auth.guard';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 import { AllExceptionsFilter } from './common/filters/http-exception.filter';
 import { TimezoneInterceptor } from './common/interceptors/TimezoneInterceptor';
+import * as path from 'path';
+
+dotenv.config({
+  path: path.resolve(process.cwd(), '.env'),
+});
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

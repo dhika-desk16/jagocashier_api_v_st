@@ -28,9 +28,12 @@ import { PrismaModule } from './prisma/prisma.module';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './modules/auth/jwt-auth.guard';
 import { seconds, ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
-
+import { ConfigModule } from '@nestjs/config';
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     RolesModule,
     StoresModule,
     ProductCategoriesModule,
