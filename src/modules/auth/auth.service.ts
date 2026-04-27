@@ -11,19 +11,14 @@ export class AuthService {
   constructor(
     private prisma: PrismaService,
     private jwtService: JwtService,
-  ) {
-    console.log('JWT SERVICE:', this.jwtService);
-  }
+  ) {}
 
   generateAccessToken(user: any) {
-    return this.jwtService.sign(
-      {
-        sub: user.id,
-        username: user.username,
-        role: user.role,
-      },
-      { expiresIn: '10m' },
-    );
+    return this.jwtService.sign({
+      sub: user.id,
+      username: user.username,
+      role: user.role,
+    });
   }
 
   async generateRefreshToken(userId: number, deviceId: string) {

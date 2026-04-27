@@ -6,7 +6,7 @@ import { AuthController } from './auth.controller';
 import { UsersModule } from '../users/users.module';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { ConfigService } from '@nestjs/config';
-
+import { StringValue } from 'ms';
 @Module({
   imports: [
     UsersModule,
@@ -15,14 +15,21 @@ import { ConfigService } from '@nestjs/config';
       inject: [ConfigService],
       useFactory: (config: ConfigService) => {
         const secret = config.get<string>('JWT_SECRET');
+        const expiresIn = config.get<string>('JWT_EXPIRES_IN');
 
         if (!secret) {
-          throw new Error('FATAL: JWT_SECRET is missing in ConfigService');
+          throw new Error('FATAL: JWT_SECRET is missing');
+        }
+
+        if (!expiresIn) {
+          throw new Error('FATAL: JWT_EXPIRES_IN is missing');
         }
 
         return {
           secret,
-          signOptions: { expiresIn: '1d' },
+          signOptions: {
+            expiresIn: expiresIn as StringValue,
+          },
         };
       },
     }),
