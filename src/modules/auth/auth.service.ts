@@ -11,7 +11,9 @@ export class AuthService {
   constructor(
     private prisma: PrismaService,
     private jwtService: JwtService,
-  ) {}
+  ) {
+    console.log('JWT OPTIONS:', (this.jwtService as any).options);
+  }
 
   generateAccessToken(user: any) {
     return this.jwtService.sign({
