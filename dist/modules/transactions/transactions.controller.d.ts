@@ -8,9 +8,9 @@ export declare class TransactionsController {
         items: {
             createdAt: Date;
             id: string;
-            notes: string | null;
             productId: number;
             quantity: number;
+            notes: string | null;
             variantId: number | null;
             discountAmount: import("generated/prisma/runtime/library").Decimal;
             subtotal: import("generated/prisma/runtime/library").Decimal;
@@ -23,9 +23,9 @@ export declare class TransactionsController {
         id: string;
         code: string;
         storeId: number;
+        customerId: string | null;
         userId: number;
         status: string;
-        customerId: string | null;
         discountAmount: import("generated/prisma/runtime/library").Decimal;
         subtotal: import("generated/prisma/runtime/library").Decimal;
         taxAmount: import("generated/prisma/runtime/library").Decimal;
@@ -39,9 +39,9 @@ export declare class TransactionsController {
         id: string;
         code: string;
         storeId: number;
+        customerId: string | null;
         userId: number;
         status: string;
-        customerId: string | null;
         discountAmount: import("generated/prisma/runtime/library").Decimal;
         subtotal: import("generated/prisma/runtime/library").Decimal;
         taxAmount: import("generated/prisma/runtime/library").Decimal;

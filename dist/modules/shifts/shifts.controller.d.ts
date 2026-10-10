@@ -11,11 +11,6 @@ export declare class ShiftsController {
     }): Promise<{
         message: string;
         data: {
-            createdAt: Date;
-            updatedAt: Date;
-            id: number;
-            storeId: number;
-            userId: number;
             openingCash: import("generated/prisma/runtime/library").Decimal;
             closingCash: import("generated/prisma/runtime/library").Decimal | null;
             expectedCash: import("generated/prisma/runtime/library").Decimal | null;
@@ -24,6 +19,11 @@ export declare class ShiftsController {
             closedAt: Date | null;
             status: string;
             notes: string | null;
+            createdAt: Date;
+            updatedAt: Date;
+            id: number;
+            storeId: number;
+            userId: number;
         };
     }>;
     closeShift(id: number, closeShiftDto: CloseShiftDto, req: Request & {
@@ -31,11 +31,6 @@ export declare class ShiftsController {
     }): Promise<{
         message: string;
         data: {
-            createdAt: Date;
-            updatedAt: Date;
-            id: number;
-            storeId: number;
-            userId: number;
             openingCash: import("generated/prisma/runtime/library").Decimal;
             closingCash: import("generated/prisma/runtime/library").Decimal | null;
             expectedCash: import("generated/prisma/runtime/library").Decimal | null;
@@ -44,14 +39,14 @@ export declare class ShiftsController {
             closedAt: Date | null;
             status: string;
             notes: string | null;
+            createdAt: Date;
+            updatedAt: Date;
+            id: number;
+            storeId: number;
+            userId: number;
         };
     }>;
     findAll(): import("generated/prisma").Prisma.PrismaPromise<{
-        createdAt: Date;
-        updatedAt: Date;
-        id: number;
-        storeId: number;
-        userId: number;
         openingCash: import("generated/prisma/runtime/library").Decimal;
         closingCash: import("generated/prisma/runtime/library").Decimal | null;
         expectedCash: import("generated/prisma/runtime/library").Decimal | null;
@@ -60,6 +55,11 @@ export declare class ShiftsController {
         closedAt: Date | null;
         status: string;
         notes: string | null;
+        createdAt: Date;
+        updatedAt: Date;
+        id: number;
+        storeId: number;
+        userId: number;
     }[]>;
     findOne(id: string): string;
     update(id: string, updateShiftDto: UpdateShiftDto): string;

@@ -19,6 +19,7 @@ const create_shift_dto_1 = require("./dto/create-shift.dto");
 const update_shift_dto_1 = require("./dto/update-shift.dto");
 const close_shift_dto_1 = require("./dto/close-shift.dto");
 const throttler_1 = require("@nestjs/throttler");
+const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
 let ShiftsController = class ShiftsController {
     shiftsService;
     constructor(shiftsService) {
@@ -49,6 +50,7 @@ exports.ShiftsController = ShiftsController;
 __decorate([
     (0, common_1.Post)(),
     (0, throttler_1.Throttle)({ long: {} }),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),

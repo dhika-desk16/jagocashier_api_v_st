@@ -7,36 +7,74 @@ import { AuthUserInterface } from '../interfaces/auth-user.interface';
 @Injectable()
 export class ShiftsService {
   constructor(private readonly prisma: PrismaService) {}
+
   async create(createShiftDto: CreateShiftDto, user: AuthUserInterface) {
-    const userId = Number(user.userId);
-    const existingShift = await this.prisma.shift.findFirst({
-      where: { userId },
-      orderBy: {
-        createdAt: 'desc',
-      },
-    });
+    console.log('[SHIFT CREATE] Request diterima');
+    console.log('[SHIFT CREATE] DTO:', createShiftDto);
+    console.log('[SHIFT CREATE] User:', user);
 
-    if (existingShift?.status === 'OPEN') {
-      throw new ConflictException({
-        message:
-          'Shift sebelumnya masih terbuka. Tutup shift dulu sebelum membuka yang baru.',
-        existingShiftId: existingShift.id,
-        status: existingShift.status,
+    try {
+      const userId = Number(user.userId);
+
+      console.log('[SHIFT CREATE] Parsed userId:', userId);
+
+      // 1. Periksa shift terakhir pengguna.
+      console.log('[SHIFT CREATE] Mencari shift terakhir...');
+
+      const existingShift = await this.prisma.shift.findFirst({
+        where: { userId },
+        orderBy: {
+          createdAt: 'desc',
+        },
       });
+
+      console.log('[SHIFT CREATE] Existing shift:', existingShift);
+
+      // 2. Tolak jika shift sebelumnya masih terbuka.
+      if (existingShift?.status === 'OPEN') {
+        console.warn('[SHIFT CREATE] Ditolak: shift sebelumnya masih OPEN');
+
+        throw new ConflictException({
+          message:
+            'Shift sebelumnya masih terbuka. Tutup shift dulu sebelum membuka yang baru.',
+          existingShiftId: existingShift.id,
+          status: existingShift.status,
+        });
+      }
+
+      // 3. Buat shift baru.
+      console.log('[SHIFT CREATE] Membuat shift baru...');
+
+      const newShift = await this.prisma.shift.create({
+        data: {
+          ...createShiftDto,
+          userId,
+          status: 'OPEN',
+        },
+      });
+
+      console.log('[SHIFT CREATE] Shift berhasil dibuat:', newShift);
+
+      return {
+        message: 'Shift berhasil dibuka.',
+        data: newShift,
+      };
+    } catch (error) {
+      // Pertahankan exception bisnis agar tetap menghasilkan status yang sesuai.
+      if (error instanceof ConflictException) {
+        throw error;
+      }
+
+      // Tampilkan detail error asli pada terminal backend.
+      console.error('[SHIFT CREATE] GAGAL');
+      console.error('[SHIFT CREATE] Error name:', error?.constructor?.name);
+      console.error('[SHIFT CREATE] Error message:', error?.message);
+      console.error('[SHIFT CREATE] Error code:', error?.code);
+      console.error('[SHIFT CREATE] Full error:', error);
+
+      // Lempar ulang agar mekanisme error handling NestJS tetap berjalan.
+      throw error;
     }
-
-    const newShift = await this.prisma.shift.create({
-      data: {
-        ...createShiftDto,
-        userId,
-        status: 'OPEN',
-      },
-    });
-
-    return {
-      message: 'Shift berhasil dibuka.',
-      data: newShift,
-    };
   }
 
   async closeShift(id: number, closeShiftDto: any, user: AuthUserInterface) {

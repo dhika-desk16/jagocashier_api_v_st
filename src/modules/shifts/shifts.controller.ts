@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Req,
+  UseGuards,
 } from '@nestjs/common';
 import { ShiftsService } from './shifts.service';
 import { CreateShiftDto } from './dto/create-shift.dto';
@@ -14,6 +15,7 @@ import { UpdateShiftDto } from './dto/update-shift.dto';
 import { AuthUserInterface } from '../interfaces/auth-user.interface';
 import { CloseShiftDto } from './dto/close-shift.dto';
 import { Throttle } from '@nestjs/throttler';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Controller('shifts')
 export class ShiftsController {
@@ -21,6 +23,7 @@ export class ShiftsController {
 
   @Post()
   @Throttle({ long: {} })
+  @UseGuards(JwtAuthGuard)
   create(
     @Body() createShiftDto: CreateShiftDto,
     @Req() req: Request & { user: AuthUserInterface },
