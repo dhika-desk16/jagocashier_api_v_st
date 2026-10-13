@@ -64,7 +64,7 @@ async function bootstrap() {
     app.useGlobalFilters(new http_exception_filter_1.AllExceptionsFilter());
     const port = process.env.PORT ?? 3000;
     await app.listen(port);
-    console.log(`🚀 Server running on http://localhost:${port}/api/v1`);
+    console.log(`Server running on http://localhost:${port}/api/v1`);
 }
 bootstrap();
 //# sourceMappingURL=main.js.map

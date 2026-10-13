@@ -37,6 +37,7 @@ const prisma_module_1 = require("./prisma/prisma.module");
 const core_1 = require("@nestjs/core");
 const throttler_1 = require("@nestjs/throttler");
 const config_1 = require("@nestjs/config");
+const receivables_module_1 = require("./receivables/receivables.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -70,6 +71,7 @@ exports.AppModule = AppModule = __decorate([
             loyalty_transactions_module_1.LoyaltyTransactionsModule,
             auth_module_1.AuthModule,
             prisma_module_1.PrismaModule,
+            receivables_module_1.ReceivablesModule,
             throttler_1.ThrottlerModule.forRoot([
                 {
                     name: 'short',

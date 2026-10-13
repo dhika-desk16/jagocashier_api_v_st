@@ -96,7 +96,7 @@ let TransactionsService = class TransactionsService {
                         discountAmount: new library_1.Decimal(0),
                         taxAmount,
                         totalAmount,
-                        status: 'PAID',
+                        status: 'PENDING',
                         transactionDate: new Date(),
                         items: {
                             create: itemsPayload.map((item) => ({
@@ -111,9 +111,9 @@ let TransactionsService = class TransactionsService {
                 return transaction;
             }
             catch (err) {
-                console.error('PRISMA ERROR RAW:', err);
-                console.error('PRISMA ERROR MESSAGE:', err?.message);
-                console.error('PRISMA ERROR META:', err?.meta);
+                console.error('PRISMA ERROR RAW: ', err);
+                console.error('PRISMA ERROR MESSAGE: ', err?.message);
+                console.error('PRISMA ERROR META: ', err?.meta);
                 throw err;
             }
         });

@@ -14,10 +14,15 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// ============================================
-// LEVEL 0: Base entities (no foreign keys)
-// ============================================
+enum ReceivableStatus {
+  OPEN
+  PARTIALLY_PAID
+  PAID
+  OVERDUE
+  CANCELLED
+}
 
+// Base entities (no foreign keys)
 model Role {
   id          Int      @id @default(autoincrement())
   name        String   @unique
@@ -122,14 +127,12 @@ model Customer {
   transactions        Transaction[]
   loyaltyPoints       LoyaltyPoint?
   loyaltyTransactions LoyaltyTransaction[]
+  receivables         Receivable[]
 
   @@map("customers")
 }
 
-// ============================================
-// LEVEL 1: Entities depending on Level 0
-// ============================================
-
+// Entities depending on Level 0
 model StoreSetting {
   id              Int      @id @default(autoincrement())
   storeId         Int      @unique
@@ -255,10 +258,7 @@ model LoyaltyPoint {
   @@map("loyalty_points")
 }
 
-// ============================================
-// LEVEL 2: Entities depending on Level 0-1
-// ============================================
-
+// Entities depending on Level 0-1
 model ProductVariant {
   id              Int      @id @default(autoincrement())
   productId       Int
@@ -334,10 +334,7 @@ model PromotionProduct {
   @@map("promotion_products")
 }
 
-// ============================================
-// LEVEL 3: Entities depending on Level 0-2
-// ============================================
-
+// Entities depending on Level 0-2
 model StockAdjustment {
   id             Int      @id @default(autoincrement())
   inventoryId    Int
@@ -401,14 +398,12 @@ model Transaction {
   payments            Payment[]
   receipt             Receipt?
   loyaltyTransactions LoyaltyTransaction[]
+  receivable          Receivable?
 
   @@map("transactions")
 }
 
-// ============================================
-// LEVEL 4: Entities depending on Level 0-3
-// ============================================
-
+// Entities depending on Level 0-3
 model TransactionItem {
   id             String   @id @default(uuid())
   transactionId  String
@@ -476,4 +471,27 @@ model LoyaltyTransaction {
   transaction Transaction @relation(fields: [transactionId], references: [id])
 
   @@map("loyalty_transactions")
+}
+
+model Receivable {
+  id            String @id @default(uuid())
+  transactionId String @unique
+  customerId    String
+
+  amountDue Decimal @db.Decimal(10, 2)
+
+  dueDate DateTime @db.Timestamp(6)
+
+  status ReceivableStatus @default(OPEN)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  transaction Transaction @relation(fields: [transactionId], references: [id], onDelete: Restrict)
+  customer    Customer    @relation(fields: [customerId], references: [id], onDelete: Restrict)
+
+  @@index([customerId, status])
+  @@index([dueDate, status])
+  @@index([transactionId, status])
+  @@map("receivables")
 }

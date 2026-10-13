@@ -29,6 +29,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './modules/auth/jwt-auth.guard';
 import { seconds, ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { ConfigModule } from '@nestjs/config';
+import { ReceivablesModule } from './receivables/receivables.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -58,6 +59,7 @@ import { ConfigModule } from '@nestjs/config';
     LoyaltyTransactionsModule,
     AuthModule,
     PrismaModule,
+    ReceivablesModule,
     ThrottlerModule.forRoot([
       {
         name: 'short',

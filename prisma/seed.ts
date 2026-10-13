@@ -263,12 +263,10 @@ async function seedProductCategories() {
     },
   ];
 
-  // Create parent categories
   const createdCategories = await Promise.all(
     categories.map((cat) => prisma.productCategory.create({ data: cat })),
   );
 
-  // Add subcategories
   const subcategories = [
     {
       name: 'Smartphones',

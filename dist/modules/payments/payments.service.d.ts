@@ -1,10 +1,17 @@
-import { CreatePaymentDto } from './dto/create-payment.dto';
-import { UpdatePaymentDto } from './dto/update-payment.dto';
 import { PrismaService } from "../../prisma/prisma.service";
+import { CreatePaymentDto } from './dto/create-payment.dto';
+import { Prisma } from "../../../generated/prisma/index.js";
 export declare class PaymentsService {
     private prisma;
     constructor(prisma: PrismaService);
-    create(createPaymentDto: CreatePaymentDto): string;
+    create(transactionId: string, dto: CreatePaymentDto): Promise<import("../../common/dto/response.dto").ResponseDto<{
+        transactionId: string;
+        status: string;
+        totalAmount: Prisma.Decimal;
+        paid: Prisma.Decimal;
+        remaining: Prisma.Decimal;
+        change: Prisma.Decimal;
+    }>>;
     findAll(): Promise<import("../../common/dto/response.dto").ResponseDto<{
         createdAt: Date;
         id: string;
@@ -12,11 +19,8 @@ export declare class PaymentsService {
         notes: string | null;
         transactionId: string;
         paymentMethodId: number;
-        amount: import("generated/prisma/runtime/library").Decimal;
+        amount: Prisma.Decimal;
         referenceNumber: string | null;
         paymentDate: Date;
     }[]>>;
-    findOne(id: number): string;
-    update(id: number, updatePaymentDto: UpdatePaymentDto): string;
-    remove(id: number): string;
 }

@@ -34,6 +34,7 @@ export class ShiftsController {
 
   @Patch(':id/close')
   @Throttle({ long: {} })
+  @UseGuards(JwtAuthGuard)
   closeShift(
     @Param('id') id: number,
     @Body() closeShiftDto: CloseShiftDto,

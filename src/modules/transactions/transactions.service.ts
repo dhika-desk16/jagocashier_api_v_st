@@ -118,7 +118,7 @@ export class TransactionsService {
             taxAmount,
             totalAmount,
 
-            status: 'PAID',
+            status: 'PENDING',
             transactionDate: new Date(),
 
             items: {
@@ -134,9 +134,9 @@ export class TransactionsService {
 
         return transaction;
       } catch (err: any) {
-        console.error('PRISMA ERROR RAW:', err);
-        console.error('PRISMA ERROR MESSAGE:', err?.message);
-        console.error('PRISMA ERROR META:', err?.meta);
+        console.error('PRISMA ERROR RAW: ', err);
+        console.error('PRISMA ERROR MESSAGE: ', err?.message);
+        console.error('PRISMA ERROR META: ', err?.meta);
         throw err;
       }
     });

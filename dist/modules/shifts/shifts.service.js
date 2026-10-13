@@ -18,20 +18,14 @@ let ShiftsService = class ShiftsService {
         this.prisma = prisma;
     }
     async create(createShiftDto, user) {
-        console.log('[SHIFT CREATE] Request diterima');
-        console.log('[SHIFT CREATE] DTO:', createShiftDto);
-        console.log('[SHIFT CREATE] User:', user);
         try {
             const userId = Number(user.userId);
-            console.log('[SHIFT CREATE] Parsed userId:', userId);
-            console.log('[SHIFT CREATE] Mencari shift terakhir...');
             const existingShift = await this.prisma.shift.findFirst({
                 where: { userId },
                 orderBy: {
                     createdAt: 'desc',
                 },
             });
-            console.log('[SHIFT CREATE] Existing shift:', existingShift);
             if (existingShift?.status === 'OPEN') {
                 console.warn('[SHIFT CREATE] Ditolak: shift sebelumnya masih OPEN');
                 throw new common_1.ConflictException({
