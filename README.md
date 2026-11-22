@@ -1,98 +1,496 @@
+# JagoCashier API
+
+<p align="center"><strong>REST API backend for modern point-of-sale and store operations</strong></p>
+
 <p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
+  <img src="https://img.shields.io/badge/NestJS-11-E0234E?logo=nestjs&logoColor=white" alt="NestJS 11">
+  <img src="https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white" alt="TypeScript 5">
+  <img src="https://img.shields.io/badge/Prisma-6-2D3748?logo=prisma&logoColor=white" alt="Prisma 6">
+  <img src="https://img.shields.io/badge/PostgreSQL-4169E1?logo=postgresql&logoColor=white" alt="PostgreSQL">
+  <img src="https://img.shields.io/badge/License-UNLICENSED-lightgrey" alt="License">
 </p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+JagoCashier API is a backend service for cashier and multi-store retail operations. It provides authentication, catalog and inventory management, sales transactions, payments, receipts, promotions, customer loyalty, receivables, shift management, and stock operations through versioned REST endpoints.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Table of Contents
 
-## Description
+- [Overview](#overview)
+- [Key Features](#key-features)
+- [Technology Stack](#technology-stack)
+- [System Requirements](#system-requirements)
+- [Architecture](#architecture)
+- [Project Structure](#project-structure)
+- [Getting Started](#getting-started)
+- [Environment Configuration](#environment-configuration)
+- [Usage](#usage)
+- [API Documentation](#api-documentation)
+- [Database](#database)
+- [Testing](#testing)
+- [Deployment](#deployment)
+- [Security](#security)
+- [Troubleshooting](#troubleshooting)
+- [Roadmap](#roadmap)
+- [Contributing](#contributing)
+- [License](#license)
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+---
 
-## Project setup
+## Overview
 
-```bash
-$ npm install
+The API centralizes point-of-sale operations so multiple stores can manage users, products, inventory, transactions, and customer records consistently. It is designed for cashier applications, store management tools, and inventory or reporting clients.
+
+### Objectives
+
+- Provide secure access for store staff and role-based permissions.
+- Support sales workflows from shift opening through payment and receipt generation.
+- Track inventory across stores, including adjustments, transfers, and expiry batches.
+- Manage customer loyalty, promotions, taxes, and receivable balances.
+
+### Scope
+
+This repository contains the API server, Prisma data model and migrations, seed data, unit specifications, and an end-to-end test setup. It does not include a web or mobile point-of-sale interface.
+
+---
+
+## Key Features
+
+- JWT access tokens and 7-day rotating refresh tokens bound to a device ID
+- Role and permission models for administrative and operational access
+- Multi-store management, store settings, and cashier shift lifecycle
+- Product categories, variants, SKUs, barcodes, and stock inventory
+- Stock adjustments and transfers between stores
+- Inventory batches, expiring-stock lookup, and expired-stock write-off
+- Transaction items, multiple payment records, receipts, and receivables
+- Promotions, product promotions, taxes, customers, and loyalty points
+- Global validation, CORS, standardized responses, exceptions, and timezone handling
+- Request throttling with short, medium, and long limits
+
+---
+
+## Technology Stack
+
+### Backend
+
+- Framework: NestJS 11
+- Language: TypeScript 5
+- ORM: Prisma 6
+- Database: PostgreSQL
+- Authentication: Passport JWT
+- Validation: `class-validator` and `class-transformer`
+- Password hashing: bcrypt
+- HTTP platform: Express
+- Date utilities: Day.js
+
+### Testing
+
+- Jest 30
+- ts-jest
+- Supertest
+
+### Infrastructure
+
+- Package manager: npm
+- Runtime: Node.js
+- API prefix: `/api`
+- API version: URI-based, defaulting to `v1`
+
+---
+
+## System Requirements
+
+### Software
+
+- Node.js 20 or newer
+- npm 10 or newer
+- PostgreSQL 13 or newer
+- Prisma-compatible database tooling
+
+### Recommended Resources
+
+- CPU: 2 cores or more
+- RAM: 2 GB or more
+- Storage: enough for PostgreSQL data and application logs
+
+---
+
+## Architecture
+
+The application follows a modular NestJS architecture. HTTP controllers receive requests, services implement business logic, and Prisma provides database access. Global middleware handles validation, versioned routing, exception formatting, response transformation, CORS, throttling, and timezone conversion.
+
+```text
+Client
+  │
+  ▼
+NestJS Controllers
+  │
+  ▼
+Domain Services
+  │
+  ▼
+PrismaService
+  │
+  ▼
+PostgreSQL
 ```
 
-## Compile and run the project
+### Main Modules
 
-```bash
-# development
-$ npm run start
+- **Authentication:** login, refresh, profile, and token validation
+- **Organization:** roles, stores, users, and store settings
+- **Catalog:** categories, products, variants, promotions, taxes, and payment methods
+- **Operations:** inventory, batches, adjustments, transfers, shifts, and customers
+- **Commerce:** transactions, transaction items, payments, receipts, and receivables
+- **Loyalty:** loyalty points and loyalty transactions
 
-# watch mode
-$ npm run start:dev
+---
 
-# production mode
-$ npm run start:prod
+## Project Structure
+
+```text
+.
+├── prisma/
+│   ├── migrations/       # Versioned PostgreSQL migrations
+│   ├── schema.prisma     # Prisma data model
+│   └── seed.ts           # Seed roles, stores, users, products, and settings
+├── src/
+│   ├── common/           # Filters, interceptors, guards, DTO helpers, and utilities
+│   ├── modules/          # Feature modules and REST controllers
+│   ├── prisma/           # Prisma module and database service
+│   ├── app.module.ts     # Application module composition
+│   └── main.ts           # Server bootstrap and global configuration
+├── test/
+│   └── app.e2e-spec.ts   # End-to-end test example
+├── dist/                 # Compiled output
+├── generated/prisma/     # Generated Prisma client
+├── package.json
+└── README.md
 ```
 
-## Run tests
+---
+
+## Getting Started
+
+### Prerequisites
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+node --version
+npm --version
+psql --version
 ```
+
+### Installation
+
+```bash
+git clone <repository-url>
+cd jagocashier_api_v_st
+npm install
+```
+
+### Environment Setup
+
+Create a `.env` file in the repository root:
+
+```dotenv
+DATABASE_URL="postgresql://postgres:password@localhost:5432/jagocashier"
+JWT_SECRET="replace-with-a-long-random-secret"
+JWT_EXPIRES_IN="1h"
+PORT=3000
+```
+
+### Database Setup
+
+```bash
+npx prisma generate
+npx prisma migrate deploy
+npm run seed
+```
+
+For local development with new migrations:
+
+```bash
+npx prisma migrate dev
+```
+
+### Run
+
+```bash
+# Development with watch mode
+npm run start:dev
+
+# Standard development start
+npm start
+
+# Production build and run
+npm run build
+npm run start:prod
+```
+
+The default server URL is `http://localhost:3000/api/v1`.
+
+---
+
+## Environment Configuration
+
+| Variable | Description | Required | Example |
+|---|---|---:|---|
+| `DATABASE_URL` | PostgreSQL connection string used by Prisma | Yes | `postgresql://user:password@localhost:5432/jagocashier` |
+| `JWT_SECRET` | Secret used to sign and verify access tokens | Yes | `replace-with-a-long-random-secret` |
+| `JWT_EXPIRES_IN` | Access-token lifetime accepted by `@nestjs/jwt` | Yes | `1h` |
+| `PORT` | HTTP port | No | `3000` |
+
+Keep `.env` out of source control. Use a secret manager or deployment environment variables in production.
+
+---
+
+## Usage
+
+### Authentication Example
+
+```bash
+curl --request POST http://localhost:3000/api/v1/auth/login \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "username": "superadmin",
+    "password": "password123",
+    "deviceId": "cashier-terminal-01"
+  }'
+```
+
+The login response contains `access_token`, `refresh_token`, and user data.
+
+Use the access token for protected endpoints:
+
+```bash
+curl http://localhost:3000/api/v1/auth/profile \
+  --header 'Authorization: Bearer <access_token>'
+```
+
+Refresh the token:
+
+```bash
+curl --request POST http://localhost:3000/api/v1/auth/refresh \
+  --header 'Content-Type: application/json' \
+  --header 'x-device-id: cashier-terminal-01' \
+  --data '{"refreshToken":"<refresh_token>"}'
+```
+
+### Response Format
+
+Successful responses are wrapped by a global interceptor:
+
+```json
+{
+  "success": true,
+  "message": "Request success",
+  "data": {},
+  "meta": null
+}
+```
+
+Errors include HTTP status, error code, request path, method, and timestamp.
+
+---
+
+## API Documentation
+
+Base URL:
+
+```text
+/api/v1
+```
+
+The API is URI-versioned and globally prefixed with `/api`. The default Nest route is `/api/v1`.
+
+### Authentication
+
+Send access tokens as Bearer credentials:
+
+```text
+Authorization: Bearer <access_token>
+```
+
+The refresh endpoint requires `x-device-id` and a refresh token in the request body.
+
+### Main Endpoint Groups
+
+| Resource | Base path |
+|---|---|
+| Authentication | `/auth` |
+| Roles | `/roles` |
+| Stores | `/stores` |
+| Users | `/users` |
+| Store settings | `/store-settings` |
+| Product categories | `/product-categories` |
+| Products | `/products` |
+| Product variants | `/product-variants` |
+| Inventory | `/inventory` |
+| Inventory batches | `/inventory-batches` |
+| Stock adjustments | `/stock-adjustments` |
+| Stock transfers | `/stock-transfers` |
+| Shifts | `/shifts` |
+| Customers | `/customers` |
+| Promotions | `/promotions` |
+| Payment methods | `/payment-methods` |
+| Taxes | `/taxes` |
+| Transactions | `/transactions` |
+| Transaction items | `/transaction-items` |
+| Payments | `/payments` |
+| Receipts | `/receipts` |
+| Receivables | `/receivables` |
+| Loyalty | `/loyalty-points`, `/loyalty-transactions` |
+
+Most CRUD resources support `POST`, `GET`, `PATCH`, and `DELETE`. Use the controllers under `src/modules/` for exact request bodies and route-specific behavior.
+
+---
+
+## Database
+
+PostgreSQL is the primary database. Prisma models cover roles, stores, users, refresh tokens, catalog items, inventory batches, shifts, transactions, payments, loyalty, receipts, and receivables.
+
+### Migration Commands
+
+```bash
+# Create a migration during development
+npx prisma migrate dev --name <migration_name>
+
+# Apply existing migrations
+npx prisma migrate deploy
+
+# Reset a local database
+npx prisma migrate reset
+
+# Open Prisma Studio
+npx prisma studio
+```
+
+Migrations are stored in `prisma/migrations/`. The generated Prisma client is stored in `generated/prisma/`.
+
+### Seed Data
+
+```bash
+npm run seed
+```
+
+The seed creates example roles, stores, store settings, users, categories, products, variants, inventory, customers, payment methods, taxes, and promotions. The default seeded password is `password123`; change or disable seed credentials before production use.
+
+---
+
+## Testing
+
+### Run Tests
+
+```bash
+# Unit tests
+npm test
+
+# Watch mode
+npm run test:watch
+
+# End-to-end tests
+npm run test:e2e
+
+# Coverage
+npm run test:cov
+```
+
+Coverage output is written to `coverage/`. Unit specifications are colocated with feature modules in `src/modules/`.
+
+---
 
 ## Deployment
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+### Production Requirements
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+- A reachable PostgreSQL instance
+- `DATABASE_URL`, `JWT_SECRET`, and `JWT_EXPIRES_IN` configured securely
+- A production Node.js process manager or container runtime
+- HTTPS termination at a reverse proxy or platform load balancer
+- Persistent database backups and log collection
+
+### Production Steps
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+npm ci
+npx prisma generate
+npx prisma migrate deploy
+npm run build
+npm run start:prod
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+Run migrations and application deployment as separate, reviewed steps where possible. Do not run watch mode or seed scripts in production.
 
-## Resources
+### Verification
 
-Check out a few resources that may come in handy when working with NestJS:
+```bash
+curl http://<host>/api/v1
+```
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+Verify database connectivity, login and refresh behavior, protected routes, migrations, logs, and TLS configuration before accepting traffic.
 
-## Support
+---
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+## Security
 
-## Stay in touch
+- Access tokens are signed with `JWT_SECRET` and validated by a Passport JWT strategy.
+- Refresh tokens are hashed in PostgreSQL and associated with a user and device ID.
+- bcrypt protects stored passwords and refresh-token hashes.
+- A global validation pipe allows only DTO-defined fields and rejects unknown fields.
+- Throttling guards provide short, medium, and long request limits.
+- CORS is enabled; production deployments should replace wildcard origins with an explicit allowlist.
+- Secrets must be provided through environment variables and excluded from source control.
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+Rotate `JWT_SECRET` intentionally because it invalidates existing access tokens.
+
+---
+
+## Troubleshooting
+
+| Problem | Possible Solution |
+|---|---|
+| Application fails to start with a JWT error | Set `JWT_SECRET` and `JWT_EXPIRES_IN` in `.env` |
+| Prisma cannot connect | Verify `DATABASE_URL`, PostgreSQL status, credentials, and network access |
+| Migration or generated-client errors | Run `npx prisma generate`, then apply migrations |
+| Login fails | Verify the username/password and confirm seed data has been loaded |
+| Protected route returns 401 | Confirm the `Authorization: Bearer` header and token expiry |
+| Refresh fails | Send `x-device-id` and use the matching login device ID |
+| Requests are rejected as unknown fields | Review the endpoint DTO and remove extra properties |
+| Port is already in use | Change `PORT` or stop the process using the current port |
+
+---
+
+## Roadmap
+
+- [x] Modular REST API for POS and inventory operations
+- [x] JWT login and refresh-token support
+- [x] Inventory batch and expiry management
+- [x] Receivable and partial-payment support
+- [ ] OpenAPI/Swagger documentation
+- [ ] Explicit production CORS policy
+- [ ] Expanded test coverage and CI pipeline
+- [ ] Deployment container and infrastructure templates
+
+---
+
+## Contributing
+
+Contributions are welcome. Before submitting a change:
+
+1. Create a focused feature or fix branch.
+2. Keep changes scoped to the relevant NestJS module.
+3. Follow existing TypeScript, DTO, service, and Prisma conventions.
+4. Run formatting, linting, unit tests, and relevant e2e tests.
+5. Include migration files for any schema changes.
+
+```bash
+npm run format
+npm run lint
+npm test
+npm run test:e2e
+npm run build
+```
+
+---
 
 ## License
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+This repository declares `UNLICENSED` in `package.json`. No public open-source license is included; obtain permission before redistributing or using it beyond the project owner's terms.
