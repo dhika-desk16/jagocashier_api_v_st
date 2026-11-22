@@ -1,13 +1,17 @@
 # JagoCashier API
 
-<p align="center"><strong>REST API backend for modern point-of-sale and store operations</strong></p>
+<p align="center">
+  <strong>REST API backend for modern point-of-sale and store operations</strong>
+</p><p align="center">
+  <img src="https://skillicons.dev/icons?i=nestjs,ts,prisma,postgres" alt="NestJS, TypeScript, Prisma, and PostgreSQL" />
+</p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/NestJS-11-E0234E?logo=nestjs&logoColor=white" alt="NestJS 11">
   <img src="https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white" alt="TypeScript 5">
   <img src="https://img.shields.io/badge/Prisma-6-2D3748?logo=prisma&logoColor=white" alt="Prisma 6">
   <img src="https://img.shields.io/badge/PostgreSQL-4169E1?logo=postgresql&logoColor=white" alt="PostgreSQL">
-  <img src="https://img.shields.io/badge/License-UNLICENSED-lightgrey" alt="License">
+  <img src="https://img.shields.io/badge/License-MIT-green" alt="License">
 </p>
 
 JagoCashier API is a backend service for cashier and multi-store retail operations. It provides authentication, catalog and inventory management, sales transactions, payments, receipts, promotions, customer loyalty, receivables, shift management, and stock operations through versioned REST endpoints.
@@ -493,4 +497,24 @@ npm run build
 
 ## License
 
-This repository declares `UNLICENSED` in `package.json`. No public open-source license is included; obtain permission before redistributing or using it beyond the project owner's terms.
+This project is licensed under the MIT License.
+
+Copyright (c) 2026 dhikaryast_page
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
