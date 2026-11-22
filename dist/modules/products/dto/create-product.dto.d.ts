@@ -7,6 +7,7 @@ export declare class CreateProductDto {
     costPrice: number;
     barcode?: string;
     imageUrl?: string;
+    hasExpiry?: boolean;
     isActive?: boolean;
     trackInventory?: boolean;
 }

@@ -1,16 +1,18 @@
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { PrismaService } from "../../prisma/prisma.service";
+import { InventoryBatchesService } from '../inventory-batches/inventory-batches.service';
 export declare class TransactionsService {
     private readonly prisma;
-    constructor(prisma: PrismaService);
+    private readonly inventoryBatches;
+    constructor(prisma: PrismaService, inventoryBatches: InventoryBatchesService);
     create(dto: CreateTransactionDto, id: number): Promise<{
         items: {
             createdAt: Date;
             id: string;
-            notes: string | null;
             productId: number;
             quantity: number;
+            notes: string | null;
             variantId: number | null;
             discountAmount: import("generated/prisma/runtime/library").Decimal;
             subtotal: import("generated/prisma/runtime/library").Decimal;
@@ -23,9 +25,9 @@ export declare class TransactionsService {
         id: string;
         code: string;
         storeId: number;
+        customerId: string | null;
         userId: number;
         status: string;
-        customerId: string | null;
         discountAmount: import("generated/prisma/runtime/library").Decimal;
         subtotal: import("generated/prisma/runtime/library").Decimal;
         taxAmount: import("generated/prisma/runtime/library").Decimal;
@@ -39,9 +41,9 @@ export declare class TransactionsService {
         id: string;
         code: string;
         storeId: number;
+        customerId: string | null;
         userId: number;
         status: string;
-        customerId: string | null;
         discountAmount: import("generated/prisma/runtime/library").Decimal;
         subtotal: import("generated/prisma/runtime/library").Decimal;
         taxAmount: import("generated/prisma/runtime/library").Decimal;

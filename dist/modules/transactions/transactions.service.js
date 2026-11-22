@@ -14,10 +14,13 @@ const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../../prisma/prisma.service");
 const library_1 = require("@prisma/client/runtime/library");
 const response_helper_1 = require("../../common/dto/response.helper");
+const inventory_batches_service_1 = require("../inventory-batches/inventory-batches.service");
 let TransactionsService = class TransactionsService {
     prisma;
-    constructor(prisma) {
+    inventoryBatches;
+    constructor(prisma, inventoryBatches) {
         this.prisma = prisma;
+        this.inventoryBatches = inventoryBatches;
     }
     async create(dto, id) {
         return this.prisma.$transaction(async (tx) => {
@@ -108,6 +111,14 @@ let TransactionsService = class TransactionsService {
                         items: true,
                     },
                 });
+                for (const item of transaction.items) {
+                    await this.inventoryBatches.consume(tx, {
+                        storeId: user.storeId,
+                        productId: item.productId,
+                        quantity: item.quantity,
+                        transactionItemId: item.id,
+                    });
+                }
                 return transaction;
             }
             catch (err) {
@@ -135,6 +146,7 @@ let TransactionsService = class TransactionsService {
 exports.TransactionsService = TransactionsService;
 exports.TransactionsService = TransactionsService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService,
+        inventory_batches_service_1.InventoryBatchesService])
 ], TransactionsService);
 //# sourceMappingURL=transactions.service.js.map

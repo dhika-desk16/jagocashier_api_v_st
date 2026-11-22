@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { ReceivablesService } from './receivables.service';
 import { CreateReceivableDto } from './dto/create-receivable.dto';
 import { UpdateReceivableDto } from './dto/update-receivable.dto';
@@ -23,7 +31,10 @@ export class ReceivablesController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateReceivableDto: UpdateReceivableDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateReceivableDto: UpdateReceivableDto,
+  ) {
     return this.receivablesService.update(+id, updateReceivableDto);
   }
 

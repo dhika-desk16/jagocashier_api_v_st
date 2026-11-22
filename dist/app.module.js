@@ -37,7 +37,8 @@ const prisma_module_1 = require("./prisma/prisma.module");
 const core_1 = require("@nestjs/core");
 const throttler_1 = require("@nestjs/throttler");
 const config_1 = require("@nestjs/config");
-const receivables_module_1 = require("./receivables/receivables.module");
+const receivables_module_1 = require("./modules/receivables/receivables.module");
+const inventory_batches_module_1 = require("./modules/inventory-batches/inventory-batches.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -89,6 +90,7 @@ exports.AppModule = AppModule = __decorate([
                     limit: 100,
                 },
             ]),
+            inventory_batches_module_1.InventoryBatchesModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [

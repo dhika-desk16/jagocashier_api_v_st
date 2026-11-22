@@ -8,11 +8,11 @@ export declare class StockTransfersService {
     findAll(): Promise<import("../../common/dto/response.dto").ResponseDto<{
         createdAt: Date;
         id: number;
+        productId: number;
+        quantity: number;
         userId: number;
         status: string;
         notes: string | null;
-        productId: number;
-        quantity: number;
         sourceStoreId: number;
         destinationStoreId: number;
         completedAt: Date | null;

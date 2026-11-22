@@ -10,11 +10,13 @@ exports.TransactionsModule = void 0;
 const common_1 = require("@nestjs/common");
 const transactions_service_1 = require("./transactions.service");
 const transactions_controller_1 = require("./transactions.controller");
+const inventory_batches_module_1 = require("../inventory-batches/inventory-batches.module");
 let TransactionsModule = class TransactionsModule {
 };
 exports.TransactionsModule = TransactionsModule;
 exports.TransactionsModule = TransactionsModule = __decorate([
     (0, common_1.Module)({
+        imports: [inventory_batches_module_1.InventoryBatchesModule],
         controllers: [transactions_controller_1.TransactionsController],
         providers: [transactions_service_1.TransactionsService],
     })

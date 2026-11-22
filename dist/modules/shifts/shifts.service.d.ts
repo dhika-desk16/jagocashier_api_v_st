@@ -12,11 +12,11 @@ export declare class ShiftsService {
             updatedAt: Date;
             id: number;
             storeId: number;
-            userId: number;
             openingCash: import("generated/prisma/runtime/library").Decimal;
             closingCash: import("generated/prisma/runtime/library").Decimal | null;
             expectedCash: import("generated/prisma/runtime/library").Decimal | null;
             variance: import("generated/prisma/runtime/library").Decimal | null;
+            userId: number;
             openedAt: Date;
             closedAt: Date | null;
             status: string;
@@ -30,11 +30,11 @@ export declare class ShiftsService {
             updatedAt: Date;
             id: number;
             storeId: number;
-            userId: number;
             openingCash: import("generated/prisma/runtime/library").Decimal;
             closingCash: import("generated/prisma/runtime/library").Decimal | null;
             expectedCash: import("generated/prisma/runtime/library").Decimal | null;
             variance: import("generated/prisma/runtime/library").Decimal | null;
+            userId: number;
             openedAt: Date;
             closedAt: Date | null;
             status: string;
@@ -46,11 +46,11 @@ export declare class ShiftsService {
         updatedAt: Date;
         id: number;
         storeId: number;
-        userId: number;
         openingCash: import("generated/prisma/runtime/library").Decimal;
         closingCash: import("generated/prisma/runtime/library").Decimal | null;
         expectedCash: import("generated/prisma/runtime/library").Decimal | null;
         variance: import("generated/prisma/runtime/library").Decimal | null;
+        userId: number;
         openedAt: Date;
         closedAt: Date | null;
         status: string;

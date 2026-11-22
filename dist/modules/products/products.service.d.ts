@@ -17,6 +17,7 @@ export declare class ProductsService {
         costPrice: import("generated/prisma/runtime/library").Decimal;
         barcode: string | null;
         imageUrl: string | null;
+        hasExpiry: boolean;
         trackInventory: boolean;
     }>>;
     findAll(page?: number, limit?: number | 'all'): Promise<import("../../common/dto/response.dto").ResponseDto<{
@@ -33,6 +34,7 @@ export declare class ProductsService {
             costPrice: import("generated/prisma/runtime/library").Decimal;
             barcode: string | null;
             imageUrl: string | null;
+            hasExpiry: boolean;
             trackInventory: boolean;
         }[];
         meta: {
@@ -53,6 +55,7 @@ export declare class ProductsService {
             costPrice: import("generated/prisma/runtime/library").Decimal;
             barcode: string | null;
             imageUrl: string | null;
+            hasExpiry: boolean;
             trackInventory: boolean;
         }[];
         meta: {
@@ -87,6 +90,7 @@ export declare class ProductsService {
             costPrice: import("generated/prisma/runtime/library").Decimal;
             barcode: string | null;
             imageUrl: string | null;
+            hasExpiry: boolean;
             trackInventory: boolean;
         }[];
     } & {
@@ -121,6 +125,7 @@ export declare class ProductsService {
             costPrice: import("generated/prisma/runtime/library").Decimal;
             barcode: string | null;
             imageUrl: string | null;
+            hasExpiry: boolean;
             trackInventory: boolean;
         }[];
     }>>;
@@ -137,6 +142,7 @@ export declare class ProductsService {
         costPrice: import("generated/prisma/runtime/library").Decimal;
         barcode: string | null;
         imageUrl: string | null;
+        hasExpiry: boolean;
         trackInventory: boolean;
     }[]>>;
     findProductBySKU(sku: string): Promise<import("../../common/dto/response.dto").ResponseDto<{
@@ -152,6 +158,7 @@ export declare class ProductsService {
         costPrice: import("generated/prisma/runtime/library").Decimal;
         barcode: string | null;
         imageUrl: string | null;
+        hasExpiry: boolean;
         trackInventory: boolean;
     } | null>>;
     findProductByBarcode(barcode: string): Promise<import("../../common/dto/response.dto").ResponseDto<({
@@ -191,6 +198,7 @@ export declare class ProductsService {
         costPrice: import("generated/prisma/runtime/library").Decimal;
         barcode: string | null;
         imageUrl: string | null;
+        hasExpiry: boolean;
         trackInventory: boolean;
     }) | null>>;
     findAllWithCategoryNoCache(): Promise<import("../../common/dto/response.dto").ResponseDto<({
@@ -207,6 +215,7 @@ export declare class ProductsService {
             costPrice: import("generated/prisma/runtime/library").Decimal;
             barcode: string | null;
             imageUrl: string | null;
+            hasExpiry: boolean;
             trackInventory: boolean;
         }[];
     } & {
@@ -232,6 +241,7 @@ export declare class ProductsService {
             costPrice: import("generated/prisma/runtime/library").Decimal;
             barcode: string | null;
             imageUrl: string | null;
+            hasExpiry: boolean;
             trackInventory: boolean;
         } | null;
         productVariants: {

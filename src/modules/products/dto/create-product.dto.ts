@@ -39,9 +39,14 @@ export class CreateProductDto {
 
   @IsOptional()
   @IsBoolean()
+  hasExpiry?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
   isActive?: boolean;
 
   @IsOptional()
   @IsBoolean()
   trackInventory?: boolean;
+
 }

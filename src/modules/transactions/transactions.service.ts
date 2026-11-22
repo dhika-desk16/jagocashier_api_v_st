@@ -9,11 +9,14 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { Decimal } from '@prisma/client/runtime/library';
 import { TransactionItemPayload } from '../interfaces/TransactionItemPayload.interface';
 import { createResponse } from 'src/common/dto/response.helper';
+import { InventoryBatchesService } from '../inventory-batches/inventory-batches.service';
 
 @Injectable()
 export class TransactionsService {
-  constructor(private readonly prisma: PrismaService) {}
-
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly inventoryBatches: InventoryBatchesService,
+  ) {}
   async create(dto: CreateTransactionDto, id: number) {
     return this.prisma.$transaction(async (tx) => {
       try {
@@ -131,6 +134,15 @@ export class TransactionsService {
             items: true,
           },
         });
+
+        for (const item of transaction.items) {
+          await this.inventoryBatches.consume(tx, {
+            storeId: user.storeId!,
+            productId: item.productId,
+            quantity: item.quantity,
+            transactionItemId: item.id,
+          });
+        }
 
         return transaction;
       } catch (err: any) {

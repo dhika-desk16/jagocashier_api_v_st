@@ -29,7 +29,8 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './modules/auth/jwt-auth.guard';
 import { seconds, ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { ConfigModule } from '@nestjs/config';
-import { ReceivablesModule } from './receivables/receivables.module';
+import { ReceivablesModule } from './modules/receivables/receivables.module';
+import { InventoryBatchesModule } from './modules/inventory-batches/inventory-batches.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -77,6 +78,7 @@ import { ReceivablesModule } from './receivables/receivables.module';
         limit: 100,
       },
     ]),
+    InventoryBatchesModule,
   ],
   controllers: [AppController],
   providers: [
